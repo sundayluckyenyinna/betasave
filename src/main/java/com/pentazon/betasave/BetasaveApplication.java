@@ -5,9 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class BetasaveApplication {
-
 	public static void main(String[] args) {
-		SpringApplication.run(BetasaveApplication.class, args);
+		SpringApplication.run(BetasaveApplication.class, args
+		);
 	}
-
 }
