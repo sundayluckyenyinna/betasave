@@ -1,7 +1,5 @@
 package com.pentazon.betasave.modules.user.model;
 
-import org.apache.tomcat.jni.Local;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
