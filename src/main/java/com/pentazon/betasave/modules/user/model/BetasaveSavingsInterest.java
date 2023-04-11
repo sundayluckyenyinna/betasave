@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "bt_saving_interest")
-public class BetasaveSavingInterest {
+public class BetasaveSavingsInterest {
     @Id
     private BigInteger Id;
 
