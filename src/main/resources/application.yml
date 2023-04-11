@@ -1,1 +1,17 @@
+server:
+  port: 8090
 
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    host: dpg-cgq83be4dadce834c84g-a
+    port: 5432
+    username: root
+    password: c1zJs5rugZn2nTcavvIs45QPmFMCjYny
+    database: betasavemgtdb
+    url: jdbc:postgresql://dpg-cgq83be4dadce834c84g-a.oregon-postgres.render.com:5432/betasavemgtdb
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
