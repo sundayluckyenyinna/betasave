@@ -1,7 +1,9 @@
+########################### Server configurations ####################################
 server:
   port: 8090
 
 
+###################### Spring configurations ################################
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -15,3 +17,12 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+
+  ######################## Custom configurations #######################
+betasave:
+  security:
+    jwt:
+      secret: c1zJs5rugZn2nTcavvIs45QPmFMCjYny
+      expirationInMinutes: 30

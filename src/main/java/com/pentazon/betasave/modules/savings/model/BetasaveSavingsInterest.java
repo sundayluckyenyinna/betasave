@@ -1,4 +1,4 @@
-package com.pentazon.betasave.modules.user.model;
+package com.pentazon.betasave.modules.savings.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

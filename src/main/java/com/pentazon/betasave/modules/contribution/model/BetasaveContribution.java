@@ -1,4 +1,4 @@
-package com.pentazon.betasave.modules.user.model;
+package com.pentazon.betasave.modules.contribution.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,7 +9,7 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "bt_contribution")
+@Table(name = "bs_contribution")
 public class BetasaveContribution {
     @Id
     private BigInteger id;

@@ -1,17 +1,21 @@
 package com.pentazon.betasave.modules.user.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
-@Table(name = "bt_user")
+@Table(name = "bs_user")
+@Getter
+@Setter
 public class BetasaveUser
 {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "user_id")
@@ -24,13 +28,13 @@ public class BetasaveUser
     private String middleName;
 
     @Column(name = "last_name")
-    private String lastNmae;
+    private String lastName;
 
     @Column(name = "email_address")
     private String emailAddress;
 
     @Column(name = "email_verified_at")
-    private LocalDate emailVerifiedAt;
+    private LocalDateTime emailVerifiedAt;
 
     @Column(name = "password")
     private String password;
@@ -57,22 +61,22 @@ public class BetasaveUser
     private String country;
 
     @Column(name = "zip_code")
-    private Number zipCode;
+    private String zipCode;
 
     @Column(name = "last_login_date")
-    private LocalDate lastLoginDate;
+    private LocalDateTime lastLoginDate;
 
     @Column(name = "deleted_at")
-    private LocalDate deletedAt;
+    private LocalDateTime deletedAt;
 
     @Column(name = "auth_token")
     private String authToken;
 
     @Column(name = "createdAt")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
     @Column(name = "verify_submit_status")
     private String verifySubmitStatus;
@@ -87,7 +91,7 @@ public class BetasaveUser
     private String locale;
 
     @Column(name = "user_role_id")
-    private Number userRoleId;
+    private Long userRoleId;
 
     @Column(name = "username")
     private String username;
@@ -108,7 +112,7 @@ public class BetasaveUser
     private String geoLocation;
 
     @Column(name = "login_attempt")
-    private Number loginAttempt;
+    private Long loginAttempt;
 
     @Column(name = "gender")
     private String gender;
@@ -117,23 +121,24 @@ public class BetasaveUser
     private String channel;
 
     @Column(name = "auth_token_created_date")
-    private LocalDate authTokenCreatedDate;
+    private LocalDateTime authTokenCreatedDate;
 
     @Column(name = "auth_token_expiration_date")
-    private LocalDate authTokenExpirationDate;
+    private LocalDateTime authTokenExpirationDate;
 
     @Column(name = "otp")
     private String otp;
 
     @Column(name = "otp_created_date")
-    private Date otpCreatedDate;
+    private LocalDateTime otpCreatedDate;
 
     @Column(name = "otp_exp_date")
-    private LocalDate otpExpDate;
+    private LocalDateTime otpExpDate;
 
     @Column(name = "is_otp_verified")
     private Boolean isOtpVerified;
 
     @Column(name = "status")
     private String status;
+
 }
