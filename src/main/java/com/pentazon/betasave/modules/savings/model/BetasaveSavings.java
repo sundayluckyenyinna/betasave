@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 @Table(name = "bt_savings")
 public class BetasaveSavings {
     @Id
-    private BigInteger id;
+    private Long id;
 
     @Column(name = "user_id")
-    private BigInteger userId;
+    private Long userId;
 
     @Column(name = "user_email")
     private String userEmail;
@@ -54,10 +54,10 @@ public class BetasaveSavings {
     private BigDecimal targetAmount;
 
     @Column(name = "frequency")
-    private Number frequency;
+    private Integer frequency;
 
     @Column(name = "tenor")
-    private Number tenor;
+    private Integer tenor;
 
     @Column(name = "milestone_amount")
     private BigDecimal milestoneAmount;
@@ -81,5 +81,5 @@ public class BetasaveSavings {
     private BigDecimal interestAccrued;
 
     @Column(name = "saving_interest_id")
-    private BigInteger savingInterestId;
+    private Long savingInterestId;
 }

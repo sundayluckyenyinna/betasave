@@ -1,28 +1,3 @@
-########################### Server configurations ####################################
-server:
-  port: 8090
-
-
-###################### Spring configurations ################################
 spring:
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    host: dpg-cgq83be4dadce834c84g-a
-    port: 5432
-    username: root
-    password: c1zJs5rugZn2nTcavvIs45QPmFMCjYny
-    database: betasavemgtdb
-    url: jdbc:postgresql://dpg-cgq83be4dadce834c84g-a.oregon-postgres.render.com:5432/betasavemgtdb
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: update
-
-  ######################## Custom configurations #######################
-betasave:
-  security:
-    jwt:
-      secret: c1zJs5rugZn2nTcavvIs45QPmFMCjYny
-      expirationInMinutes: 30
+  profiles:
+    active: dev

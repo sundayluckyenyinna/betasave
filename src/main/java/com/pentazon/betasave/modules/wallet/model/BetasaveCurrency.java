@@ -11,7 +11,7 @@ import java.math.BigInteger;
 @Table(name = "bt_currency")
 public class BetasaveCurrency {
     @Id
-    private BigInteger id;
+    private Long id;
 
     @Column(name = "currency_name")
     private String currencyName;

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Table(name = "bs_contribution")
 public class BetasaveContribution {
     @Id
-    private BigInteger id;
+    private Long id;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -39,7 +39,7 @@ public class BetasaveContribution {
     private LocalDateTime terminationDueAt;
 
     @Column(name = "target_amount")
-    private BigInteger targetAmount;
+    private BigDecimal targetAmount;
 
     @Column(name = "milestone_amount")
     private BigDecimal milestoneAmount;
@@ -48,13 +48,13 @@ public class BetasaveContribution {
     private BigDecimal milestonePercent;
 
     @Column(name = "frequency")
-    private Number frequency;
+    private Integer frequency;
 
     @Column(name = "tenor")
-    private Number tenor;
+    private Integer tenor;
 
     @Column(name = "creator_id")
-    private BigInteger creatorId;
+    private Long creatorId;
 
     @Column(name = "invite_link")
     private String inviteLink;

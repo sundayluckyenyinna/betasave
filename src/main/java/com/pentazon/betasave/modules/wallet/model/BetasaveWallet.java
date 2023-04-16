@@ -12,13 +12,13 @@ import java.time.LocalDateTime;
 @Table(name = "bt_wallet")
 public class BetasaveWallet {
     @Id
-    private BigInteger id;
+    private Long id;
 
     @Column(name = "wallet_id")
-    private BigInteger walletId;
+    private Long walletId;
 
     @Column(name = "user_id")
-    private BigInteger userId;
+    private Long userId;
 
     @Column(name = "user_email")
     private String userEmail;
@@ -36,7 +36,7 @@ public class BetasaveWallet {
     private String updatedBy;
 
     @Column(name = "currency_id")
-    private BigInteger currencyId;
+    private Long currencyId;
 
     @Column(name = "balance")
     private BigDecimal balance;

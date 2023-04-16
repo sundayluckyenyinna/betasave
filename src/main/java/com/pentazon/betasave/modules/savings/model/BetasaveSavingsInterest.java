@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 @Table(name = "bt_saving_interest")
 public class BetasaveSavingsInterest {
     @Id
-    private BigInteger Id;
+    private Long Id;
 
     @Column(name = "user_id")
-    private BigInteger userId;
+    private Long userId;
 
     @Column(name = "user_email")
     private String userEmail;
@@ -36,5 +36,5 @@ public class BetasaveSavingsInterest {
     private BigDecimal interestAccruedPercent;
 
     @Column(name = "savings_id")
-    private BigInteger savingsId;
+    private Long savingsId;
 }

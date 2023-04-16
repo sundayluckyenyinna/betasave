@@ -1,5 +1,6 @@
 package com.pentazon.betasave.config;
 
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.context.annotation.Bean;
@@ -27,5 +28,10 @@ public class AppConfig
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder(){
         return new BCryptPasswordEncoder(5);
+    }
+
+    @Bean
+    public Gson gson(){
+        return new Gson();
     }
 }

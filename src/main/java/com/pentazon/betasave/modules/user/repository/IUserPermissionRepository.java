@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface IUserPermission extends JpaRepository<UserPermission, Long>
+public interface IUserPermissionRepository extends JpaRepository<UserPermission, Long>
 {
     @Query("SELECT t FROM UserPermission t where t.roleId = :roleId")
     List<UserPermission> findAllPermissionsForRole(@Param("roleId") Long roleId);

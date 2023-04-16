@@ -112,7 +112,7 @@ public class BetasaveUser
     private String geoLocation;
 
     @Column(name = "login_attempt")
-    private Long loginAttempt;
+    private Integer loginAttempt;
 
     @Column(name = "gender")
     private String gender;

@@ -11,13 +11,13 @@ import java.time.LocalDateTime;
 @Table(name = "bt_contribution_user")
 public class BetasaveContributionUser {
     @Id
-    private BigInteger id;
+    private Long id;
 
     @Column(name = "user_id")
-    private BigInteger userId;
+    private Long userId;
 
     @Column(name = "contribution_Id")
-    private BigInteger contributionId;
+    private Long contributionId;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
