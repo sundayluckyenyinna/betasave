@@ -3,6 +3,7 @@ server:
   port: 8090
 
 
+
 ###################### Spring configurations ################################
 spring:
   datasource:
@@ -20,7 +21,8 @@ spring:
     hibernate:
       ddl-auto: update
 
-  ######################## Custom configurations #######################
+
+######################## Custom configurations #######################
 betasave:
   security:
     jwt:
