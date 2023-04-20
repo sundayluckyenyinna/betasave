@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.pentazon.betasave.dto.ServerResponse;
 import com.pentazon.betasave.modules.user.payload.request.CreateUserRequestPayload;
 import com.pentazon.betasave.modules.user.service.IBetasaveUserService;
+import com.sun.xml.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,5 +28,10 @@ public class UserController
         // Call the service
         ServerResponse serverResponse = betasaveUserService.createUser(requestPayload);
         return ResponseEntity.ok(serverResponse);
+    }
+
+    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public  ResponseEntity<Object> handleBetasaveLogin() {
+        // TODO: validate request body
     }
 }
