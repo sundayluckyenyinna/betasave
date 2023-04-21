@@ -7,4 +7,6 @@ E03A: User record already exists by email.
 E03B: User record already exists by username.
 E03C: User record already exists by mobileNumber.
 E04: DeviceId not present for mobile channel.
+E05: Incorrect email or password.
+E06: Account is locked. Please contact administrator or support.
 E99: System Error.

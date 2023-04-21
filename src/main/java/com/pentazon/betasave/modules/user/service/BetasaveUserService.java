@@ -9,7 +9,9 @@ import com.pentazon.betasave.dto.ServerResponse;
 import com.pentazon.betasave.modules.user.model.BetasaveUser;
 import com.pentazon.betasave.modules.user.model.UserRole;
 import com.pentazon.betasave.modules.user.payload.request.CreateUserRequestPayload;
+import com.pentazon.betasave.modules.user.payload.request.LoginUserRequestPayload;
 import com.pentazon.betasave.modules.user.payload.response.CreateUserResponsePayload;
+import com.pentazon.betasave.modules.user.payload.response.LoginUserResponsePayload;
 import com.pentazon.betasave.modules.user.repository.IBetasaveUserRepository;
 import com.pentazon.betasave.modules.user.repository.IUserPermissionRepository;
 import com.pentazon.betasave.modules.user.repository.IUserRoleRepository;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -127,6 +130,75 @@ public class BetasaveUserService implements IBetasaveUserService{
         responsePayload.setUsername(savedUser.getUsername());
         responsePayload.setCreatedAt(savedUser.getCreatedAt());
         responsePayload.setUpdatedAt(savedUser.getUpdatedAt());
+
+        responseCode = ResponseCode.SUCCESS;
+        responseMessage = messageProvider.getMessage(responseCode);
+        PayloadResponse response = PayloadResponse.getInstance();
+        response.setResponseCode(responseCode);
+        response.setResponseMessage(responseMessage);
+        response.setResponseData(responsePayload);
+
+        return response;
+    }
+
+    public ServerResponse loginUser(LoginUserRequestPayload requestPayload){
+        String responseCode = ResponseCode.SYSTEM_ERROR;
+        String responseMessage = messageProvider.getMessage(responseCode);
+        ErrorResponse errorResponse = ErrorResponse.getInstance();
+
+        // Todo: check if user exist from database -> done
+        // TODO: If user doesn't exist, return status code 02
+        BetasaveUser userByEmail = betasaveUserRepository.findByEmailAddress(requestPayload.getEmailAddress());
+        if(userByEmail == null){
+            responseCode = ResponseCode.RECORD_NOT_FOUND;
+            responseMessage = messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+
+        // Check if account is active
+        boolean isAccountLocked = userByEmail.getStatus().equalsIgnoreCase(Status.LOCKED.name());
+        if(isAccountLocked){
+            responseCode = ResponseCode.ACCOUNT_LOCKED;
+            responseMessage = messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+
+        // todo: validate password with bcrypt = done
+        // todo: return with invalid username or password if password isn't correct = done
+        String getEncryptedPassword = userByEmail.getPassword();
+        String getUsername = userByEmail.getUsername();
+        Boolean correctPassword = passwordUtil.isPasswordMatch(requestPayload.getPassword(),getEncryptedPassword);
+        if (!correctPassword){
+            responseCode = ResponseCode.INCORRECT_EMAIL_OR_PASSWORD;
+            responseMessage = messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            if(userByEmail.getLoginAttempt() >= 4){
+                userByEmail.setStatus(Status.LOCKED.name());
+            }
+            userByEmail.setLoginAttempt(userByEmail.getLoginAttempt() + 1);
+            betasaveUserRepository.save(userByEmail);
+            return errorResponse;
+        }
+
+
+        // todo: return jwt token if username and password is correct.
+        BetasaveUser newUserLogin = userByEmail;
+        LoginUserResponsePayload responsePayload = new LoginUserResponsePayload();
+
+        newUserLogin.setAuthToken(jwtUtil.createJWTString(requestPayload.getEmailAddress()));
+//        newUserLogin.setLoginAttempt(newUserLogin.getLoginAttempt()+1);
+        newUserLogin.setLastLoginDate(LocalDateTime.now());
+
+        BetasaveUser loginUser = betasaveUserRepository.save(newUserLogin);
+        responsePayload.setAuthToken(loginUser.getAuthToken());
+        responsePayload.setUpdatedAt(loginUser.getUpdatedAt());
+        responsePayload.setUsername(loginUser.getUsername());
+        responsePayload.setLastLoginDate(newUserLogin.getLastLoginDate());
 
         responseCode = ResponseCode.SUCCESS;
         responseMessage = messageProvider.getMessage(responseCode);
