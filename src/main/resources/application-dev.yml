@@ -4,7 +4,7 @@ server:
 
 
 
-###################### Spring configurations ################################
+###################### Spring configurations for database and mail service ################################
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -20,7 +20,19 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
-
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    username: talk2wahab247@gmail.com
+    password: xqllqmrlgmsslixp
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+          auth: true
+          starttls:
+            enable: true
 
 ######################## Custom configurations #######################
 betasave:
@@ -28,3 +40,6 @@ betasave:
     jwt:
       secret: c1zJs5rugZn2nTcavvIs45QPmFMCjYnyc1zJs5rugZn2nTca
       expirationInMinutes: 30
+  otp:
+    signup:
+      expirationTimeInMin: 10

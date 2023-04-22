@@ -9,4 +9,7 @@ E03C: User record already exists by mobileNumber.
 E04: DeviceId not present for mobile channel.
 E05: Incorrect email or password.
 E06: Account is locked. Please contact administrator or support.
+E07: Otp is expired. Please request for a fresh otp.
+E08: Otp is incorrect.
+E09: Otp already verified by system.
 E99: System Error.

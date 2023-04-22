@@ -1,13 +1,15 @@
 package com.pentazon.betasave.modules.user.service;
 
-import com.pentazon.betasave.config.JwtUtil;
+import com.pentazon.betasave.dto.OtpSendInfo;
+import com.pentazon.betasave.modules.user.payload.request.OtpVerificationRequestPayload;
+import com.pentazon.betasave.modules.user.payload.response.OtpVerificationResponsePayload;
+import com.pentazon.betasave.utils.JwtUtil;
 import com.pentazon.betasave.config.MessageProvider;
 import com.pentazon.betasave.constants.*;
 import com.pentazon.betasave.dto.ErrorResponse;
 import com.pentazon.betasave.dto.PayloadResponse;
 import com.pentazon.betasave.dto.ServerResponse;
 import com.pentazon.betasave.modules.user.model.BetasaveUser;
-import com.pentazon.betasave.modules.user.model.UserRole;
 import com.pentazon.betasave.modules.user.payload.request.CreateUserRequestPayload;
 import com.pentazon.betasave.modules.user.payload.request.LoginUserRequestPayload;
 import com.pentazon.betasave.modules.user.payload.response.CreateUserResponsePayload;
@@ -16,12 +18,13 @@ import com.pentazon.betasave.modules.user.repository.IBetasaveUserRepository;
 import com.pentazon.betasave.modules.user.repository.IUserPermissionRepository;
 import com.pentazon.betasave.modules.user.repository.IUserRoleRepository;
 import com.pentazon.betasave.modules.user.utils.PasswordUtil;
+import com.pentazon.betasave.utils.OtpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class BetasaveUserService implements IBetasaveUserService{
@@ -43,6 +46,9 @@ public class BetasaveUserService implements IBetasaveUserService{
 
     @Autowired
     private IUserPermissionRepository  userPermissionRepository;
+
+    @Autowired
+    private OtpUtil otpUtil;
 
 
     @Override
@@ -125,6 +131,16 @@ public class BetasaveUserService implements IBetasaveUserService{
         user.setStatus(Status.UNVERIFIED.name());
         BetasaveUser savedUser = betasaveUserRepository.saveAndFlush(user);
 
+        // Send OTP to the user email
+        CompletableFuture
+                .runAsync(() -> {
+                    OtpSendInfo otpSendInfo = otpUtil.sendSignUpOtpToMail(requestPayload.getEmailAddress());
+                    user.setOtp(passwordUtil.hashPassword(otpSendInfo.getOtpSent()));
+                    user.setOtpCreatedDate(otpSendInfo.getCreatedDateTime());
+                    user.setOtpExpDate(otpSendInfo.getExpirationDateTime());
+                    betasaveUserRepository.save(user);
+                });
+
         CreateUserResponsePayload responsePayload = new CreateUserResponsePayload();
         responsePayload.setAuthToken(savedUser.getAuthToken());
         responsePayload.setUsername(savedUser.getUsername());
@@ -141,13 +157,14 @@ public class BetasaveUserService implements IBetasaveUserService{
         return response;
     }
 
+    @Override
     public ServerResponse loginUser(LoginUserRequestPayload requestPayload){
         String responseCode = ResponseCode.SYSTEM_ERROR;
         String responseMessage = messageProvider.getMessage(responseCode);
         ErrorResponse errorResponse = ErrorResponse.getInstance();
 
-        // Todo: check if user exist from database -> done
-        // TODO: If user doesn't exist, return status code 02
+        // check if user exist from database -> done
+        // If user doesn't exist, return status code 02
         BetasaveUser userByEmail = betasaveUserRepository.findByEmailAddress(requestPayload.getEmailAddress());
         if(userByEmail == null){
             responseCode = ResponseCode.RECORD_NOT_FOUND;
@@ -167,8 +184,8 @@ public class BetasaveUserService implements IBetasaveUserService{
             return errorResponse;
         }
 
-        // todo: validate password with bcrypt = done
-        // todo: return with invalid username or password if password isn't correct = done
+        // validate password with bcrypt = done
+        // return with invalid username or password if password isn't correct = done
         String getEncryptedPassword = userByEmail.getPassword();
         String getUsername = userByEmail.getUsername();
         Boolean correctPassword = passwordUtil.isPasswordMatch(requestPayload.getPassword(),getEncryptedPassword);
@@ -186,7 +203,7 @@ public class BetasaveUserService implements IBetasaveUserService{
         }
 
 
-        // todo: return jwt token if username and password is correct.
+        // return jwt token if username and password is correct.
         BetasaveUser newUserLogin = userByEmail;
         LoginUserResponsePayload responsePayload = new LoginUserResponsePayload();
 
@@ -208,5 +225,71 @@ public class BetasaveUserService implements IBetasaveUserService{
         response.setResponseData(responsePayload);
 
         return response;
+    }
+
+    @Override
+    public ServerResponse verifyOtp(OtpVerificationRequestPayload requestPayload, String authToken){
+        String responseCode = ResponseCode.SYSTEM_ERROR;
+        String responseMessage = this.messageProvider.getMessage(responseCode);
+        ErrorResponse errorResponse = ErrorResponse.getInstance();
+
+        String otpFromUser = requestPayload.getOtp();
+        String userEmail = jwtUtil.getUserEmailFromJWTToken(authToken);
+        BetasaveUser user = betasaveUserRepository.findByEmailAddress(userEmail);
+
+        // Check for the existence of the user in the system
+        if(user == null) {
+            responseCode = ResponseCode.RECORD_NOT_FOUND;
+            responseMessage = this.messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+
+        // Check if Otp is already verified.
+        if(user.getIsOtpVerified()){
+            responseCode = ResponseCode.OTP_ALREADY_VERIFIED;
+            responseMessage = this.messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+
+        // Check if otp has expired
+        if(user.getOtpExpDate().isBefore(LocalDateTime.now())){
+            responseCode = ResponseCode.OTP_EXPIRED;
+            responseMessage = this.messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+
+        // Check for the correctness of the otp
+        boolean isOtpCorrect = passwordUtil.isPasswordMatch(otpFromUser, user.getOtp());
+        if(!isOtpCorrect){
+            responseCode = ResponseCode.OTP_INCORRECT;
+            responseMessage = this.messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+
+        // Update the user status
+        user.setStatus(Status.ACTIVE.name());
+        user.setIsOtpVerified(true);
+        user.setIsVerified(true);
+        betasaveUserRepository.saveAndFlush(user);
+
+        // Create response to the application client.
+        OtpVerificationResponsePayload responsePayload = new OtpVerificationResponsePayload();
+        responsePayload.setUserStatus(user.getStatus());
+        responsePayload.setVerifiedDateTime(LocalDateTime.now());
+        responsePayload.setCreatedDateTime(user.getOtpCreatedDate());
+
+        PayloadResponse payloadResponse = PayloadResponse.getInstance();
+        payloadResponse.setResponseCode(ResponseCode.SUCCESS);
+        payloadResponse.setResponseMessage(this.messageProvider.getMessage(ResponseCode.SUCCESS));
+        payloadResponse.setResponseData(responsePayload);
+        return payloadResponse;
     }
 }

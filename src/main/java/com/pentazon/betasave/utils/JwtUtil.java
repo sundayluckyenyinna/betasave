@@ -1,4 +1,4 @@
-package com.pentazon.betasave.config;
+package com.pentazon.betasave.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

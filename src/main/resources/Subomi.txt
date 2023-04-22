@@ -251,11 +251,11 @@ Base package: com.pentazzon.wayasave
 
 MODULES
 USER
-1) Endpoint for signup/resgistration/onboarding --> status UNVERIFIED
-2) Endpoint for login
-3) Endpoint for verifying OTP of a newly registered user.
+1) Endpoint for signup/resgistration/onboarding --> status UNVERIFIED. done
+2) Endpoint for login. done
+3) Endpoint for verifying OTP of a newly registered user.  done
 4) Endpoint for forgot password.
-5) Endpoint to user details
+5) Endpoint to get user details
 6) Endpoint to update any user detail apart from EMAIL.
 7) Endpoint to self lock user account.
 
@@ -275,4 +275,7 @@ Database Name: betasavemgtdb
 Port: 5432
 Host Name: dpg-cgq83be4dadce834c84g-a
 External URL: postgres://root:c1zJs5rugZn2nTcavvIs45QPmFMCjYny@dpg-cgq83be4dadce834c84g-a.oregon-postgres.render.com/betasavemgtdb
-PSQL Command: PGPASSWORD=c1zJs5rugZn2nTcavvIs45QPmFMCjYny psql -h dpg-cgq83be4dadce834c84g-a.oregon-postgres.render.com -U root betasavemgtdb 
+PSQL Command: PGPASSWORD=c1zJs5rugZn2nTcavvIs45QPmFMCjYny psql -h dpg-cgq83be4dadce834c84g-a.oregon-postgres.render.com -U root betasavemgtdb
+
+app pword: xqllqmrlgmsslixp
+mail: securesally@gmail.com

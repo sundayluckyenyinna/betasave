@@ -11,5 +11,8 @@ public class ResponseCode
     public static final String DEVICE_ID_NOT_FOUND = "04";
     public static final String INCORRECT_EMAIL_OR_PASSWORD = "05";
     public static final String ACCOUNT_LOCKED = "06";
+    public static final String OTP_EXPIRED = "07";
+    public static final String OTP_INCORRECT = "08";
+    public static final String OTP_ALREADY_VERIFIED = "09";
     public static final String SYSTEM_ERROR = "99";
 }
