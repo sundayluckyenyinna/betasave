@@ -5,9 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class LoginUserResponsePayload {
+public class ResetPasswordResponsePayload {
     private String username;
-    private String authToken;
-    private LocalDateTime lastLoginDate;
     private LocalDateTime updatedAt;
 }

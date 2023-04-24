@@ -2,7 +2,9 @@ package com.pentazon.betasave.modules.user.service;
 
 import com.pentazon.betasave.dto.OtpSendInfo;
 import com.pentazon.betasave.modules.user.payload.request.OtpVerificationRequestPayload;
+import com.pentazon.betasave.modules.user.payload.request.ResetPasswordRequestPayload;
 import com.pentazon.betasave.modules.user.payload.response.OtpVerificationResponsePayload;
+import com.pentazon.betasave.modules.user.payload.response.ResetPasswordResponsePayload;
 import com.pentazon.betasave.utils.JwtUtil;
 import com.pentazon.betasave.config.MessageProvider;
 import com.pentazon.betasave.constants.*;
@@ -19,6 +21,7 @@ import com.pentazon.betasave.modules.user.repository.IUserPermissionRepository;
 import com.pentazon.betasave.modules.user.repository.IUserRoleRepository;
 import com.pentazon.betasave.modules.user.utils.PasswordUtil;
 import com.pentazon.betasave.utils.OtpUtil;
+import com.sun.xml.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -188,7 +191,7 @@ public class BetasaveUserService implements IBetasaveUserService{
         // return with invalid username or password if password isn't correct = done
         String getEncryptedPassword = userByEmail.getPassword();
         String getUsername = userByEmail.getUsername();
-        Boolean correctPassword = passwordUtil.isPasswordMatch(requestPayload.getPassword(),getEncryptedPassword);
+        boolean correctPassword = passwordUtil.isPasswordMatch(requestPayload.getPassword(),getEncryptedPassword);
         if (!correctPassword){
             responseCode = ResponseCode.INCORRECT_EMAIL_OR_PASSWORD;
             responseMessage = messageProvider.getMessage(responseCode);
@@ -224,6 +227,47 @@ public class BetasaveUserService implements IBetasaveUserService{
         response.setResponseMessage(responseMessage);
         response.setResponseData(responsePayload);
 
+        return response;
+    }
+
+    @Override
+    public ServerResponse resetUserPassword(ResetPasswordRequestPayload requestPayload) {
+        String responseCode = ResponseCode.SYSTEM_ERROR;
+        String responseMessage = this.messageProvider.getMessage(responseCode);
+        ErrorResponse errorResponse = ErrorResponse.getInstance();
+
+        //verify user by email in database
+        BetasaveUser user = betasaveUserRepository.findByEmailAddress(requestPayload.getEmailAddress());
+        if(user == null){
+            responseCode = ResponseCode.RECORD_NOT_FOUND;
+            responseMessage = this.messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+        //verify old password
+        boolean correctOldPassword = passwordUtil.isPasswordMatch(requestPayload.getOldPassword(), user.getPassword());
+        if (!correctOldPassword){
+            responseCode = ResponseCode.INCORRECT_PASSWORD;
+            responseMessage = this.messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+        //update password in database
+        user.setPassword(passwordUtil.hashPassword(requestPayload.getNewPassword()));
+        user.setUpdatedAt(LocalDateTime.now());
+        betasaveUserRepository.saveAndFlush(user);
+        ResetPasswordResponsePayload responsePayload = new ResetPasswordResponsePayload();
+        responsePayload.setUsername(user.getUsername());
+        responsePayload.setUpdatedAt(user.getUpdatedAt());
+
+        responseCode = ResponseCode.SUCCESS;
+        responseMessage = messageProvider.getMessage(responseCode);
+        PayloadResponse response = PayloadResponse.getInstance();
+        response.setResponseCode(responseCode);
+        response.setResponseMessage(responseMessage);
+        response.setResponseData(responsePayload);
         return response;
     }
 

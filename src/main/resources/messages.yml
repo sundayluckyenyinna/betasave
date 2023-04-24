@@ -12,4 +12,5 @@ E06: Account is locked. Please contact administrator or support.
 E07: Otp is expired. Please request for a fresh otp.
 E08: Otp is incorrect.
 E09: Otp already verified by system.
+E10: Incorrect password.
 E99: System Error.
