@@ -46,4 +46,10 @@ public class UserController
         ServerResponse serverResponse = betasaveUserService.resetUserPassword(requestPayload);
         return ResponseEntity.ok(serverResponse);
     }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<ServerResponse> handleGetUser(@PathVariable String id){
+        ServerResponse serverResponse = betasaveUserService.getUser(id);
+        return ResponseEntity.ok(serverResponse);
+    }
 }

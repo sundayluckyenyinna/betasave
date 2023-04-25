@@ -12,6 +12,7 @@ public interface IBetasaveUserService
 {
     ServerResponse createUser(CreateUserRequestPayload requestPayload);
     ServerResponse loginUser(LoginUserRequestPayload requestPayload);
+    ServerResponse getUser(String id);
     ServerResponse resetUserPassword(ResetPasswordRequestPayload requestPayload);
     ServerResponse verifyOtp(OtpVerificationRequestPayload requestPayload, String authToken);
 }

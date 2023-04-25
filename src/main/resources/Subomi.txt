@@ -254,12 +254,12 @@ USER
 1) Endpoint for signup/resgistration/onboarding --> status UNVERIFIED. done
 2) Endpoint for login. done
 3) Endpoint for verifying OTP of a newly registered user.  done
-4) Endpoint for resetting password.
-4) Endpoint for forgot password.
-5) Endpoint for forget password email otp verification.
-6) Endpoint to get user details.
-7) Endpoint to update any user detail apart from EMAIL.
-8) Endpoint to self lock user account.
+4) Endpoint for resetting password. done
+5) Endpoint for forgot password.
+6) Endpoint for forget password email otp verification.
+7) Endpoint to get user details. done
+8) Endpoint to update any user detail apart from EMAIL.
+9) Endpoint to self lock user account.
 
 WALLET
 1) Endpoint to create a new wallet for a VERIFIED/ACTIVE user.
