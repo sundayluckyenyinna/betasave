@@ -15,5 +15,7 @@ public class ResponseCode
     public static final String OTP_INCORRECT = "08";
     public static final String OTP_ALREADY_VERIFIED = "09";
     public static final String INCORRECT_PASSWORD = "10";
+    public static final String USER_LOCKED_ACCOUNT = "11";
+    public static final String USER_ACCOUNT_AlREADY_LOCKED = "12";
     public static final String SYSTEM_ERROR = "99";
 }

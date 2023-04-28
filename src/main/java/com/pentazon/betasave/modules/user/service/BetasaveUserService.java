@@ -1,8 +1,7 @@
 package com.pentazon.betasave.modules.user.service;
 
 import com.pentazon.betasave.dto.OtpSendInfo;
-import com.pentazon.betasave.modules.user.payload.request.OtpVerificationRequestPayload;
-import com.pentazon.betasave.modules.user.payload.request.ResetPasswordRequestPayload;
+import com.pentazon.betasave.modules.user.payload.request.*;
 import com.pentazon.betasave.modules.user.payload.response.*;
 import com.pentazon.betasave.utils.JwtUtil;
 import com.pentazon.betasave.config.MessageProvider;
@@ -11,8 +10,6 @@ import com.pentazon.betasave.dto.ErrorResponse;
 import com.pentazon.betasave.dto.PayloadResponse;
 import com.pentazon.betasave.dto.ServerResponse;
 import com.pentazon.betasave.modules.user.model.BetasaveUser;
-import com.pentazon.betasave.modules.user.payload.request.CreateUserRequestPayload;
-import com.pentazon.betasave.modules.user.payload.request.LoginUserRequestPayload;
 import com.pentazon.betasave.modules.user.repository.IBetasaveUserRepository;
 import com.pentazon.betasave.modules.user.repository.IUserPermissionRepository;
 import com.pentazon.betasave.modules.user.repository.IUserRoleRepository;
@@ -354,6 +351,53 @@ public class BetasaveUserService implements IBetasaveUserService{
         responsePayload.setUserStatus(user.getStatus());
         responsePayload.setVerifiedDateTime(LocalDateTime.now());
         responsePayload.setCreatedDateTime(user.getOtpCreatedDate());
+
+        PayloadResponse payloadResponse = PayloadResponse.getInstance();
+        payloadResponse.setResponseCode(ResponseCode.SUCCESS);
+        payloadResponse.setResponseMessage(messageProvider.getMessage(ResponseCode.SUCCESS));
+        payloadResponse.setResponseData(responsePayload);
+        return payloadResponse;
+    }
+
+    @Override
+    public ServerResponse lockAccount(String id, LockAccountRequestPayload requestPayload) {
+        String responseCode = ResponseCode.SYSTEM_ERROR;
+        String responseMessage = messageProvider.getMessage(responseCode);
+        ErrorResponse errorResponse = ErrorResponse.getInstance();
+
+        BetasaveUser user = betasaveUserRepository.findByUserId(id);
+        if (user == null){
+            responseCode = ResponseCode.RECORD_NOT_FOUND;
+            responseMessage = messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+
+        boolean correctPassword = passwordUtil.isPasswordMatch(requestPayload.getPassword(), user.getPassword());
+        if (!correctPassword){
+            responseCode = ResponseCode.INCORRECT_PASSWORD;
+            responseMessage = messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+
+        if (user.getStatus() == Status.LOCKED.name()){
+            responseCode = ResponseCode.USER_ACCOUNT_AlREADY_LOCKED;
+            responseMessage = messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+
+        user.setStatus(Status.LOCKED.name());
+        user.setUpdatedAt(LocalDateTime.now());
+        betasaveUserRepository.saveAndFlush(user);
+
+        LockAccountResponsePayload responsePayload = new LockAccountResponsePayload();
+        responsePayload.setStatus(user.getStatus());
+        responsePayload.setUpdatedAt(user.getUpdatedAt());
 
         PayloadResponse payloadResponse = PayloadResponse.getInstance();
         payloadResponse.setResponseCode(ResponseCode.SUCCESS);

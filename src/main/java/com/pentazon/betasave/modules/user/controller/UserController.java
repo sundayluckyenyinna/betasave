@@ -1,11 +1,9 @@
 package com.pentazon.betasave.modules.user.controller;
 
 import com.pentazon.betasave.dto.ServerResponse;
-import com.pentazon.betasave.modules.user.payload.request.CreateUserRequestPayload;
-import com.pentazon.betasave.modules.user.payload.request.LoginUserRequestPayload;
-import com.pentazon.betasave.modules.user.payload.request.OtpVerificationRequestPayload;
-import com.pentazon.betasave.modules.user.payload.request.ResetPasswordRequestPayload;
+import com.pentazon.betasave.modules.user.payload.request.*;
 import com.pentazon.betasave.modules.user.service.IBetasaveUserService;
+import org.apache.catalina.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +48,12 @@ public class UserController
     @GetMapping(value = "/{id}")
     public ResponseEntity<ServerResponse> handleGetUser(@PathVariable String id){
         ServerResponse serverResponse = betasaveUserService.getUser(id);
+        return ResponseEntity.ok(serverResponse);
+    }
+
+    @PostMapping(value = "/lock-account/{id}")
+    public ResponseEntity<ServerResponse> handleLockAccount(@PathVariable String id,@RequestBody LockAccountRequestPayload requestPayload){
+        ServerResponse serverResponse = betasaveUserService.lockAccount(id, requestPayload);
         return ResponseEntity.ok(serverResponse);
     }
 }

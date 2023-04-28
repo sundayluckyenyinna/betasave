@@ -259,7 +259,7 @@ USER
 6) Endpoint for forget password email otp verification.
 7) Endpoint to get user details. done
 8) Endpoint to update any user detail apart from EMAIL.
-9) Endpoint to self lock user account.
+9) Endpoint to self lock user account. done
 
 WALLET
 1) Endpoint to create a new wallet for a VERIFIED/ACTIVE user.
@@ -267,7 +267,6 @@ WALLET
 3) Endpoint to transfer funds from user wallet to user bank account.
 4) Endpoint to transfer funds from bank account to wallet.
 5) Endpoint to transfer funds from wallet to another wallet.
-
 
 DATABASE CREDENTIALS
 Username: root

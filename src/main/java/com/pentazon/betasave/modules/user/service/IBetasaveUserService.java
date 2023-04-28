@@ -1,10 +1,7 @@
 package com.pentazon.betasave.modules.user.service;
 
 import com.pentazon.betasave.dto.ServerResponse;
-import com.pentazon.betasave.modules.user.payload.request.CreateUserRequestPayload;
-import com.pentazon.betasave.modules.user.payload.request.LoginUserRequestPayload;
-import com.pentazon.betasave.modules.user.payload.request.OtpVerificationRequestPayload;
-import com.pentazon.betasave.modules.user.payload.request.ResetPasswordRequestPayload;
+import com.pentazon.betasave.modules.user.payload.request.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,4 +12,5 @@ public interface IBetasaveUserService
     ServerResponse getUser(String id);
     ServerResponse resetUserPassword(ResetPasswordRequestPayload requestPayload);
     ServerResponse verifyOtp(OtpVerificationRequestPayload requestPayload, String authToken);
+    ServerResponse lockAccount(String id, LockAccountRequestPayload requestPayload);
 }
