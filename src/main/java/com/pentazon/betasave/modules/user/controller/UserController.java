@@ -3,7 +3,6 @@ package com.pentazon.betasave.modules.user.controller;
 import com.pentazon.betasave.dto.ServerResponse;
 import com.pentazon.betasave.modules.user.payload.request.*;
 import com.pentazon.betasave.modules.user.service.IBetasaveUserService;
-import org.apache.catalina.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,21 +38,33 @@ public class UserController
         return ResponseEntity.ok(serverResponse);
     }
 
+    @PostMapping(value = "/forgot-password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ServerResponse> handleForgetPassword(ForgetUserPasswordRequestPayload requestPayload){
+        ServerResponse serverResponse = betasaveUserService.forgetUserPassword(requestPayload);
+        return ResponseEntity.ok(serverResponse);
+    }
+
+    @PostMapping(value = "/verify-forgot-password-otp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ServerResponse> handleVerifyForgotPasswordOtp(@RequestBody VerifyForgetPasswordOtpRequestPayload requestPayload, @RequestHeader("Authorization") String jwtToken){
+        ServerResponse serverResponse = betasaveUserService.verifyForgetUserPasswordOtp(requestPayload, jwtToken);
+        return ResponseEntity.ok(serverResponse);
+    }
+
     @PostMapping(value = "/reset-password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ServerResponse> handleResetPassword(@RequestBody ResetPasswordRequestPayload requestPayload){
         ServerResponse serverResponse = betasaveUserService.resetUserPassword(requestPayload);
         return ResponseEntity.ok(serverResponse);
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ServerResponse> handleGetUser(@PathVariable String id){
         ServerResponse serverResponse = betasaveUserService.getUser(id);
         return ResponseEntity.ok(serverResponse);
     }
 
     @PostMapping(value = "/lock-account/{id}")
-    public ResponseEntity<ServerResponse> handleLockAccount(@PathVariable String id,@RequestBody LockAccountRequestPayload requestPayload){
-        ServerResponse serverResponse = betasaveUserService.lockAccount(id, requestPayload);
+    public ResponseEntity<ServerResponse> handleLockAccount(@RequestBody LockAccountRequestPayload requestPayload, @RequestHeader("Authorization") String jwtToken){
+        ServerResponse serverResponse = betasaveUserService.lockAccount(requestPayload, jwtToken);
         return ResponseEntity.ok(serverResponse);
     }
 }

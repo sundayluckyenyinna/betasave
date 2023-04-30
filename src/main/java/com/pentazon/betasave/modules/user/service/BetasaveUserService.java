@@ -253,9 +253,109 @@ public class BetasaveUserService implements IBetasaveUserService{
     }
 
     @Override
-    public ServerResponse resetUserPassword(ResetPasswordRequestPayload requestPayload) {
+    public ServerResponse forgetUserPassword(ForgetUserPasswordRequestPayload requestPayload) {
+        String responseCode = ResponseCode.SYSTEM_ERROR;
+        String responseMessage = messageProvider.getMessage(responseCode);
+        ErrorResponse errorResponse = ErrorResponse.getInstance();
+
+        // verify user email
+        BetasaveUser user = betasaveUserRepository.findByEmailAddress(requestPayload.getEmailAddress());
+        if (user == null){
+            responseCode = ResponseCode.RECORD_NOT_FOUND;
+            responseMessage = messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+
+        // Send OTP to the user email
+        CompletableFuture
+                .runAsync(() -> {
+                    OtpSendInfo otpSendInfo = otpUtil.sendForgetPasswordOtpToMail(requestPayload.getEmailAddress());
+                    user.setOtp(passwordUtil.hashPassword(otpSendInfo.getOtpSent()));
+                    user.setIsOtpVerified(false);
+                    user.setOtpCreatedDate(otpSendInfo.getCreatedDateTime());
+                    user.setOtpExpDate(otpSendInfo.getExpirationDateTime());
+                    betasaveUserRepository.save(user);
+                });
+
+        responseCode = ResponseCode.SUCCESS;
+        responseMessage = messageProvider.getMessage(responseCode);
+        PayloadResponse response = PayloadResponse.getInstance();
+        response.setResponseCode(responseCode);
+        response.setResponseMessage(responseMessage);
+        return response;
+    }
+
+    @Override
+    public ServerResponse verifyForgetUserPasswordOtp(VerifyForgetPasswordOtpRequestPayload requestPayload, String authToken) {
         String responseCode = ResponseCode.SYSTEM_ERROR;
         String responseMessage = this.messageProvider.getMessage(responseCode);
+        ErrorResponse errorResponse = ErrorResponse.getInstance();
+
+        String otpFromUser = requestPayload.getOtp();
+        String userEmail = jwtUtil.getUserEmailFromJWTToken(authToken);
+        BetasaveUser user = betasaveUserRepository.findByEmailAddress(userEmail);
+
+        // Check for the existence of the user in the system
+        if(user == null) {
+            responseCode = ResponseCode.RECORD_NOT_FOUND;
+            responseMessage = messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+
+        // Check if Otp is already verified.
+        if(user.getIsOtpVerified()){
+            responseCode = ResponseCode.OTP_ALREADY_VERIFIED;
+            responseMessage = messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+
+        // Check if otp has expired
+        if(user.getOtpExpDate().isBefore(LocalDateTime.now())){
+            responseCode = ResponseCode.OTP_EXPIRED;
+            responseMessage = messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+
+        // Check for the correctness of the otp
+        boolean isOtpCorrect = passwordUtil.isPasswordMatch(otpFromUser, user.getOtp());
+        if(!isOtpCorrect){
+            responseCode = ResponseCode.OTP_INCORRECT;
+            responseMessage = messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+
+        user.setPassword(passwordUtil.hashPassword(requestPayload.getNewPassword()));
+        user.setIsOtpVerified(true);
+        user.setUpdatedAt(LocalDateTime.now());
+        betasaveUserRepository.saveAndFlush(user);
+        VerifyForgetPasswordOtpResponsePayload responsePayload = new VerifyForgetPasswordOtpResponsePayload();
+        responsePayload.setAuthToken(user.getAuthToken());
+        responsePayload.setCreatedDateTime(user.getOtpCreatedDate());
+        responsePayload.setUpdatedDateTime(user.getUpdatedAt());
+
+        responseCode = ResponseCode.SUCCESS;
+        responseMessage = messageProvider.getMessage(responseCode);
+        PayloadResponse response = PayloadResponse.getInstance();
+        response.setResponseCode(responseCode);
+        response.setResponseMessage(responseMessage);
+        response.setResponseData(responsePayload);
+        return response;
+    }
+
+    @Override
+    public ServerResponse resetUserPassword(ResetPasswordRequestPayload requestPayload) {
+        String responseCode = ResponseCode.SYSTEM_ERROR;
+        String responseMessage = messageProvider.getMessage(responseCode);
         ErrorResponse errorResponse = ErrorResponse.getInstance();
 
         //verify user by email in database
@@ -360,12 +460,13 @@ public class BetasaveUserService implements IBetasaveUserService{
     }
 
     @Override
-    public ServerResponse lockAccount(String id, LockAccountRequestPayload requestPayload) {
+    public ServerResponse lockAccount(LockAccountRequestPayload requestPayload, String token) {
         String responseCode = ResponseCode.SYSTEM_ERROR;
         String responseMessage = messageProvider.getMessage(responseCode);
         ErrorResponse errorResponse = ErrorResponse.getInstance();
 
-        BetasaveUser user = betasaveUserRepository.findByUserId(id);
+        String email = jwtUtil.getUserEmailFromJWTToken(token);
+        BetasaveUser user = betasaveUserRepository.findByEmailAddress(email);
         if (user == null){
             responseCode = ResponseCode.RECORD_NOT_FOUND;
             responseMessage = messageProvider.getMessage(responseCode);

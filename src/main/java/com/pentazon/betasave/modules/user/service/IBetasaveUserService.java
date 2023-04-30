@@ -10,7 +10,9 @@ public interface IBetasaveUserService
     ServerResponse createUser(CreateUserRequestPayload requestPayload);
     ServerResponse loginUser(LoginUserRequestPayload requestPayload);
     ServerResponse getUser(String id);
+    ServerResponse forgetUserPassword(ForgetUserPasswordRequestPayload requestPayload);
+    ServerResponse verifyForgetUserPasswordOtp(VerifyForgetPasswordOtpRequestPayload requestPayload, String authToken);
     ServerResponse resetUserPassword(ResetPasswordRequestPayload requestPayload);
     ServerResponse verifyOtp(OtpVerificationRequestPayload requestPayload, String authToken);
-    ServerResponse lockAccount(String id, LockAccountRequestPayload requestPayload);
+    ServerResponse lockAccount(LockAccountRequestPayload requestPayload, String token);
 }

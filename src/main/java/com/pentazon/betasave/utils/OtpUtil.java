@@ -48,7 +48,35 @@ public class OtpUtil
             mailData.setSubject("Betasave Email Verification");
             mailData.setContent(signupTemplate);
             mailUtil.sendNotification(mailData);
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+            System.out.println(ignored);
+        }
+
+        return otpSendInfo;
+    }
+
+    public OtpSendInfo sendForgetPasswordOtpToMail(String email){
+        String fileName = "otp-forgotpassword";
+        String expirationTime = env.getProperty("betasave.otp.signup.expirationTimeInMin");
+        OtpSendInfo otpSendInfo = new OtpSendInfo();
+        try {
+            String signupTemplate = MessageTemplateUtil.getTemplateOf(fileName);
+            String otp = generateOtp();
+            otpSendInfo.setOtpSent(otp);
+            otpSendInfo.setRecipientEmail(email);
+            otpSendInfo.setCreatedDateTime(LocalDateTime.now());
+            otpSendInfo.setExpirationDateTime(otpSendInfo.getCreatedDateTime().plusMinutes(Integer.parseInt(expirationTime)));
+            signupTemplate = signupTemplate.replace("{otp}", otp)
+                    .replace("{otpExpiration}", expirationTime);
+
+            MailData mailData = new MailData();
+            mailData.setRecipientMail(email);
+            mailData.setSubject("Betasave Verification Email");
+            mailData.setContent(signupTemplate);
+            mailUtil.sendNotification(mailData);
+        } catch (IOException ignored) {
+            System.out.println(ignored);
+        }
 
         return otpSendInfo;
     }

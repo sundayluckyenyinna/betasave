@@ -4,9 +4,8 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class OtpVerificationResponsePayload
-{
+public class VerifyForgetPasswordOtpResponsePayload {
     private LocalDateTime createdDateTime;
-    private LocalDateTime verifiedDateTime;
-    private String userStatus;
+    private LocalDateTime updatedDateTime;
+    private String authToken;
 }

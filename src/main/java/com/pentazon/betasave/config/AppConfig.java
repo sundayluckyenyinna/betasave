@@ -17,8 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Slf4j
 public class AppConfig
 {
-//    @Autowired
-//    private Environment env;
+    @Autowired
+    private Environment env;
 
     @Bean
     public ResourceBundleMessageSource messageSource() {
@@ -46,7 +46,7 @@ public class AppConfig
 //    public JavaMailSender javaMailSender(){
 //        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 //        mailSender.setHost(env.getProperty(""));
-//        mailSender.setPort("");
+//        mailSender.setPort(99);
 //        mailSender.setPassword("");
 //        mailSender.setUsername("");
 //        mailSender.setProtocol("");
