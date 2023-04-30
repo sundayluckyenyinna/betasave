@@ -43,3 +43,11 @@ betasave:
   otp:
     signup:
       expirationTimeInMin: 10
+
+
+
+###################### Paystack Configuration ############################
+paystack:
+  secretKey: sk_test_0ffaa22ee10152d638781bdc0ccc14322124f3ee
+  publicKey: pk_test_a40841d9a1b3ef020356cad9d270f38e37f41c7c
+  initializationUrl: https://api.paystack.co/transaction/initialize

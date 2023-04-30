@@ -1,5 +1,8 @@
 package com.pentazon.betasave.modules.wallet.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -8,6 +11,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "bt_wallet")
 public class BetasaveWallet {
@@ -18,7 +23,7 @@ public class BetasaveWallet {
     private Long walletId;
 
     @Column(name = "user_id")
-    private Long userId;
+    private String userId;
 
     @Column(name = "user_email")
     private String userEmail;

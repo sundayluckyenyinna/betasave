@@ -3,6 +3,10 @@ package com.pentazon.betasave.modules.user.service;
 import com.pentazon.betasave.dto.OtpSendInfo;
 import com.pentazon.betasave.modules.user.payload.request.*;
 import com.pentazon.betasave.modules.user.payload.response.*;
+import com.pentazon.betasave.modules.wallet.repository.CurrencyRepository;
+import com.pentazon.betasave.modules.wallet.repository.WalletRepository;
+import com.pentazon.betasave.modules.wallet.model.BetasaveWallet;
+import com.pentazon.betasave.modules.wallet.util.WalletUtils;
 import com.pentazon.betasave.utils.JwtUtil;
 import com.pentazon.betasave.config.MessageProvider;
 import com.pentazon.betasave.constants.*;
@@ -15,12 +19,11 @@ import com.pentazon.betasave.modules.user.repository.IUserPermissionRepository;
 import com.pentazon.betasave.modules.user.repository.IUserRoleRepository;
 import com.pentazon.betasave.modules.user.utils.PasswordUtil;
 import com.pentazon.betasave.utils.OtpUtil;
-import com.sun.xml.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -46,8 +49,17 @@ public class BetasaveUserService implements IBetasaveUserService{
     private IUserPermissionRepository  userPermissionRepository;
 
     @Autowired
+    private WalletRepository walletRepository;
+
+    @Autowired
+    private CurrencyRepository currencyRepository;
+
+
+
+    @Autowired
     private OtpUtil otpUtil;
 
+    private static final String DEFAULT_CURRENCY_NAME = "NAIRA";
 
     @Override
     public ServerResponse createUser(CreateUserRequestPayload requestPayload) {
@@ -446,6 +458,21 @@ public class BetasaveUserService implements IBetasaveUserService{
         user.setIsVerified(true);
         betasaveUserRepository.saveAndFlush(user);
 
+        // Asynchronously create a wallet for the user.
+        CompletableFuture.runAsync(() -> {
+            BetasaveWallet betasaveWallet = new BetasaveWallet();
+            betasaveWallet.setWalletId(WalletUtils.generateUniqueWalletId());
+            betasaveWallet.setUserId(user.getUserId());
+            betasaveWallet.setUserEmail(user.getEmailAddress());
+            betasaveWallet.setCreateAt(LocalDateTime.now());
+            betasaveWallet.setUpdatedAt(LocalDateTime.now());
+            betasaveWallet.setCreatedBy(Creator.SYSTEM.name());
+            betasaveWallet.setUpdatedBy(Creator.SYSTEM.name());
+            betasaveWallet.setCurrencyId(currencyRepository.findByCurrencyName(DEFAULT_CURRENCY_NAME).getId()); // TODO
+            betasaveWallet.setBalance(new BigDecimal(0));
+            walletRepository.save(betasaveWallet);
+        });
+
         // Create response to the application client.
         OtpVerificationResponsePayload responsePayload = new OtpVerificationResponsePayload();
         responsePayload.setUserStatus(user.getStatus());
@@ -484,7 +511,7 @@ public class BetasaveUserService implements IBetasaveUserService{
             return errorResponse;
         }
 
-        if (user.getStatus() == Status.LOCKED.name()){
+        if (user.getStatus().equalsIgnoreCase(Status.LOCKED.name())){
             responseCode = ResponseCode.USER_ACCOUNT_AlREADY_LOCKED;
             responseMessage = messageProvider.getMessage(responseCode);
             errorResponse.setResponseCode(responseCode);

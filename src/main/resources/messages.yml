@@ -15,4 +15,5 @@ E09: Otp already verified by system.
 E10: Incorrect password.
 E11: Account successfully locked.
 E12: User account is already locked.
+E13: Third party failure.
 E99: System Error.
