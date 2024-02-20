@@ -39,7 +39,7 @@ public class OtpUtil
             otpSendInfo.setOtpSent(otp);
             otpSendInfo.setRecipientEmail(email);
             otpSendInfo.setCreatedDateTime(LocalDateTime.now());
-            otpSendInfo.setExpirationDateTime(otpSendInfo.getCreatedDateTime().plusMinutes(Integer.parseInt(expirationTime)));
+            otpSendInfo.setExpirationDateTime(otpSendInfo.getCreatedDateTime().plusMinutes(Integer.parseInt(expirationTime) ));
             signupTemplate = signupTemplate.replace("{otp}", otp)
                     .replace("{otpExpiration}", expirationTime);
 

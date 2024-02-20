@@ -17,8 +17,7 @@ public class WebClient
 
     public static String getForObject(String url, Map<String, Object> params, Map<String, String> headers){
         ErrorResponse errorResponse = ErrorResponse.getInstance();
-
-        Unirest.config().verifySsl(false);
+//        Unirest.config().verifySsl(false);
         try{
             GetRequest getRequest = Unirest.get(url);
             if(params != null)

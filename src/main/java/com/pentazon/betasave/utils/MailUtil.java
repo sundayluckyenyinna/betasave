@@ -24,8 +24,8 @@ public class MailUtil{
         MimeMessageHelper messageHelper = new MimeMessageHelper(message, "utf-8");
         try {
             messageHelper.setText(mailData.getContent(), true);
-            messageHelper.setTo(mailData.getRecipientMail());
             messageHelper.setFrom(env.getProperty("spring.mail.username"));
+            messageHelper.setTo(mailData.getRecipientMail());
             messageHelper.setSubject(mailData.getSubject());
             mailSender.send(message);
         } catch (MessagingException ignored) {}

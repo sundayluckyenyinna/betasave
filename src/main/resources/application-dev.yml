@@ -2,18 +2,16 @@
 server:
   port: 8090
 
-
-
 ###################### Spring configurations for database and mail service ################################
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    host: dpg-cgq83be4dadce834c84g-a
+    host: gms-sure-trade.postgres.database.azure.com
     port: 5432
-    username: root
-    password: c1zJs5rugZn2nTcavvIs45QPmFMCjYny
+    username: gms@gms-sure-trade
+    password: Password12#
     database: betasavemgtdb
-    url: jdbc:postgresql://dpg-cgq83be4dadce834c84g-a.oregon-postgres.render.com:5432/betasavemgtdb
+    url: jdbc:postgresql://gms-sure-trade.postgres.database.azure.com:5432/betasavemgtdb
   jpa:
     properties:
       hibernate:
@@ -21,7 +19,7 @@ spring:
     hibernate:
       ddl-auto: update
   mail:
-    host: smtp.gmail.com
+    host:
     port: 465
     username: talk2wahab247@gmail.com
     password: xqllqmrlgmsslixp
@@ -44,10 +42,9 @@ betasave:
     signup:
       expirationTimeInMin: 10
 
-
-
 ###################### Paystack Configuration ############################
 paystack:
   secretKey: sk_test_0ffaa22ee10152d638781bdc0ccc14322124f3ee
   publicKey: pk_test_a40841d9a1b3ef020356cad9d270f38e37f41c7c
   initializationUrl: https://api.paystack.co/transaction/initialize
+  verifyTransactionUrl: https://api.paystack.co/transaction/verify/

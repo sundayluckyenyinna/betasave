@@ -15,8 +15,7 @@ public class BetasaveApplication {
 //	private MailUtil mailUtil;
 
 	public static void main(String[] args) {
-		SpringApplication.run(BetasaveApplication.class, args
-		);
+		SpringApplication.run(BetasaveApplication.class, args);
 	}
 
 //	@EventListener(value = ApplicationStartedEvent.class)

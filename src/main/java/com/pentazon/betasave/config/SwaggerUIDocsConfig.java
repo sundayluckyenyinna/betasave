@@ -18,5 +18,4 @@ public class SwaggerUIDocsConfig
                 .paths(PathSelectors.any())
                 .build();
     }
-
 }

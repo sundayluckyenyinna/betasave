@@ -24,89 +24,47 @@ Base package: com.pentazzon.wayasave
  balance: decimal
  
 	USERS
-
   id: number
-  
   user_id: string uuid
-  
   first_name: string
-
   last_name: string
-
   middle_name: string
-
   email_address: string
-
   email_verified_at: Date;
-
   password: string
-
   address: string
-
   address2: string
-
   mobile_number: string
-
   date_of_birth: string
-
   city: string
-
   state: string;
-
   country: string
-
   zip_code: number;
-
   last_login_date: Date
-
   deleted_at: Date;
-
   auth_token: string;
-
   created_at: Date
-
   updated_at: Date;
-
   verify_submit_status: string;
-
   is_verified: boolean;
-
   business_name: string;
-
   locale: string;
-
   user_role_id: number
-
   username: string
-
   photo_link: string
-
   created_by: string
-
   modified_by: string
-
   device_id: string
-
   geo_location: string
-
   login_attempt: number
-
   gender: string
-
   channel: string
-
   auth_token_created_date: Date;
-
   auth_token_expiration_date: Date;
-
   otp: string
-
   otp_ceated_date: Date;
-
   otp_exp_date: Date;
-
   is_otp_verified: boolean;
-
   status: varchar
 
 
@@ -280,3 +238,8 @@ PSQL Command: PGPASSWORD=c1zJs5rugZn2nTcavvIs45QPmFMCjYny psql -h dpg-cgq83be4da
 
 app pword: xqllqmrlgmsslixp
 mail: securesally@gmail.com
+
+from ref: get user details
+    call paystack verification api using ref
+    if success: credit user wallet and save transaction verification log to a new table(bt_init_tran_verification)
+        failed :  save verification log

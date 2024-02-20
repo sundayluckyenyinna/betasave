@@ -1,11 +1,11 @@
 package com.pentazon.betasave.modules.wallet.service;
 
 import com.pentazon.betasave.dto.ServerResponse;
-import org.springframework.stereotype.Service;
+import com.pentazon.betasave.modules.wallet.model.BetasaveWallet;
+import com.pentazon.betasave.modules.wallet.payload.data.WalletOperationResult;
 
-@Service
 public interface IWalletService
 {
-
-    ServerResponse sendPaystackAuthorizationUrl(String amount, String currency, String token);
+    WalletOperationResult processCreditWallet(BetasaveWallet wallet, String amount);
+    WalletOperationResult processDebitWallet(BetasaveWallet wallet, String amount);
 }

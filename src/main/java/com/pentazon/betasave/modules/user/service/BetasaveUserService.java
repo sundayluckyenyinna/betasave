@@ -54,8 +54,6 @@ public class BetasaveUserService implements IBetasaveUserService{
     @Autowired
     private CurrencyRepository currencyRepository;
 
-
-
     @Autowired
     private OtpUtil otpUtil;
 
@@ -66,7 +64,7 @@ public class BetasaveUserService implements IBetasaveUserService{
         String responseCode = ResponseCode.SYSTEM_ERROR;
         String responseMessage = messageProvider.getMessage(responseCode);
         ErrorResponse errorResponse = ErrorResponse.getInstance();
-
+        
         // Check if the user already exist in database by email, username and phone number
         BetasaveUser userByEmail = betasaveUserRepository.findByEmailAddress(requestPayload.getEmailAddress());
         if(userByEmail != null){
@@ -458,8 +456,8 @@ public class BetasaveUserService implements IBetasaveUserService{
         user.setIsVerified(true);
         betasaveUserRepository.saveAndFlush(user);
 
-        // Asynchronously create a wallet for the user.
         CompletableFuture.runAsync(() -> {
+            // Asynchronously create a wallet for the user.
             BetasaveWallet betasaveWallet = new BetasaveWallet();
             betasaveWallet.setWalletId(WalletUtils.generateUniqueWalletId());
             betasaveWallet.setUserId(user.getUserId());
@@ -471,6 +469,10 @@ public class BetasaveUserService implements IBetasaveUserService{
             betasaveWallet.setCurrencyId(currencyRepository.findByCurrencyName(DEFAULT_CURRENCY_NAME).getId()); // TODO
             betasaveWallet.setBalance(new BigDecimal(0));
             walletRepository.save(betasaveWallet);
+
+            // Call a service to create a paystack customer associated with user
+            // Use the customerId from paystack to create a virtual account for the customer.
+
         });
 
         // Create response to the application client.

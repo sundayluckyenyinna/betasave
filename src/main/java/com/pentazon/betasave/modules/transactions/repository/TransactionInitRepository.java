@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransactionInitRepository extends JpaRepository<TransactionInit, Long>
 {
+    TransactionInit findByUserEmail(String emailAddress);
+    TransactionInit findByTransactionReference(String ref);
 }

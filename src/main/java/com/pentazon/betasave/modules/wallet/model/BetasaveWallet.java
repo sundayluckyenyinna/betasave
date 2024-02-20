@@ -1,5 +1,6 @@
 package com.pentazon.betasave.modules.wallet.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
+@Data
 @Getter
 @Setter
 @Entity

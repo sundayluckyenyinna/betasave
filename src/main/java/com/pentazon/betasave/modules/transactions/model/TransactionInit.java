@@ -1,11 +1,13 @@
 package com.pentazon.betasave.modules.transactions.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Data
 @Getter
 @Setter
 @Entity
@@ -33,6 +35,9 @@ public class TransactionInit
 
     @Column(name = "init_response_log")
     private String initResponseLog;
+
+    @Column(name = "transaction_status")
+    private boolean isVerified;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

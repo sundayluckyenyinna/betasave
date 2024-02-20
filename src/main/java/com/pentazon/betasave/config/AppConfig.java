@@ -31,6 +31,17 @@ public class AppConfig
         messageSource.setCacheSeconds(0);
         return messageSource;
     }
+    @Bean
+    public ResourceBundleMessageSource envSource() {
+        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        YamlPropertiesFactoryBean bean = new YamlPropertiesFactoryBean();
+        bean.setResources(new ClassPathResource(".env"));
+        messageSource.setCommonMessages(bean.getObject());
+        messageSource.setUseCodeAsDefaultMessage(true);
+        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setCacheSeconds(0);
+        return messageSource;
+    }
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder(){
@@ -41,15 +52,15 @@ public class AppConfig
     public Gson gson(){
         return new Gson();
     }
-//
-//    @Bean
-//    public JavaMailSender javaMailSender(){
-//        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-//        mailSender.setHost(env.getProperty(""));
-//        mailSender.setPort(99);
-//        mailSender.setPassword("");
-//        mailSender.setUsername("");
-//        mailSender.setProtocol("");
-//        return mailSender;
-//    }
+
+    @Bean
+    public JavaMailSender javaMailSender(){
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost(env.getProperty(""));
+        mailSender.setPort(99);
+        mailSender.setPassword("");
+        mailSender.setUsername("");
+        mailSender.setProtocol("");
+        return mailSender;
+    }
 }

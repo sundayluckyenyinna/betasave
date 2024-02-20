@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface WalletRepository extends JpaRepository<BetasaveWallet, Long>
 {
-
+    BetasaveWallet findByUserEmail(String email);
 }

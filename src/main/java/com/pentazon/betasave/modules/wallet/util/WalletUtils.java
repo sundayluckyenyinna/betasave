@@ -27,9 +27,4 @@ public class WalletUtils
         return Long.parseLong(String.join("", tokenArray));
     }
 
-    public static String generateUniqueReference(){
-        String timeString = String.valueOf(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
-        String uuid = UUID.randomUUID().toString();
-        return timeString.concat(uuid);
-    }
 }
